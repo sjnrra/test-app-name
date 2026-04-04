@@ -1,4 +1,3 @@
-
 "use client";
 
 /* ****************************************************
@@ -16,14 +15,14 @@ export default function RedirectAfterDelay() {
     useEffect(() => {
         const timer = setTimeout(() => {
             router.push("/index");
-        }, 300);
+        }, 3000);
 
         return () => clearTimeout(timer);
     }, [router]);
 
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
-            {/* <h1>3秒後に移動します...</h1> */}
+            <h1>3秒後に移動します...</h1>
         </div>
     );
 }
