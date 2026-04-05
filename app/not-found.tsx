@@ -15,13 +15,13 @@ export default function RedirectAfterDelay() {
     useEffect(() => {
         const timer = setTimeout(() => {
             router.push("/index");
-        }, 3000);
+        }, 1000);
 
         return () => clearTimeout(timer);
     }, [router]);
 
     return (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <div style={{ textAlign: "center", marginTop: "50px", minHeight: "100vh" }}>
             <h1>3秒後に移動します...</h1>
         </div>
     );

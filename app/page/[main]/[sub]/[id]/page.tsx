@@ -6,7 +6,10 @@ import { marked } from "marked";
 import matter from 'gray-matter';
 import path from "path";
 import fs from "fs/promises";
+import fs2 from "fs";
 import { ReactElement } from 'react';
+
+import MetaSection from "@/components/metaSection";
 
 /* ****************************************************
  *  type
@@ -25,6 +28,12 @@ type TableOfContent = {
   href: string;
 };
 
+type getBackAndNextDocuments_table = {
+  main: string
+  sub: string
+  id: string
+};
+
 type Prop = {
   params: Promise<{
     main: string
@@ -34,9 +43,41 @@ type Prop = {
 }
 
 /* ****************************************************
- *  function BlogPage
+ *  function getBackAndNextDocuments
  * ****************************************************/
-export default async function BlogPage({ params }: Prop): Promise<ReactElement> {
+function getBackAndNextDocuments({ main, sub, id }: getBackAndNextDocuments_table) {
+
+  const docsAllDirPath = path.join(process.cwd(), "docs", `${main}`, `${sub}`);
+  const getDirs = fs2.readdirSync(docsAllDirPath, { withFileTypes: true });
+
+  const getFillDirs = getDirs
+    .filter((f) => f.isFile() && f.name.endsWith(".md"))
+    .map((f) => `${f.name.replace(".md", "")}`);
+
+  let preFilePath = null;
+  let nextFilePath = null;
+  for (var i = 0; i <= getFillDirs.length - 1; i++) {
+    if (getFillDirs[i] === id) {
+      if (getFillDirs[i - 1]) {
+        preFilePath = path.join("/page", `${main}`, `${sub}`, `${getFillDirs[i - 1]}`);
+      }
+      if (getFillDirs[i + 1]) {
+        nextFilePath = path.join("/page", `${main}`, `${sub}`, `${getFillDirs[i + 1]}`);
+      }
+      break;
+    }
+  }
+
+  return {
+    preFilePath,
+    nextFilePath
+  };
+}
+
+/* ****************************************************
+ *  function MarkdonwToHtml
+ * ****************************************************/
+export default async function MarkdonwToHtml({ params }: Prop): Promise<ReactElement> {
   const { main } = await params;
   const { sub } = await params;
   const { id } = await params;
@@ -51,8 +92,11 @@ export default async function BlogPage({ params }: Prop): Promise<ReactElement> 
   // convert markdown to html
   const html = await marked(content);
 
+  // replace ../public to / for image path
+  const replaceHtml = html.replace(/(\.\.\/)+public/g, "");
+
   // dom create
-  const domHtml = new JSDOM(html).window.document;
+  const domHtml = new JSDOM(replaceHtml).window.document;
 
   // add html id attribute for anchor link
   const elements = domHtml.querySelectorAll<HTMLElement>("h1, h2");
@@ -105,22 +149,27 @@ export default async function BlogPage({ params }: Prop): Promise<ReactElement> 
     blogContentHtml: convHTML,
   };
 
+  const ResultBackAndNextDocuments = getBackAndNextDocuments({ main: main, sub: sub, id: id });
+
   // return
   return (
     <>
       <div className="mx-auto px-2 py-4 bg-gray-50" id="article">
-
-        <a href="http://localhost:3000/index"
-          style={{
-            paddingLeft: "20px"
-          }}>Go to Back
-        </a>
-
         <div className="flex flex-row">
 
           <div className="hidden md:block w-72 ml-4 mr-4">
             <div className="flex flex-col sticky top-6">
               <div className="p-4 shadow-md rounded-md mb-8 bg-white ">
+
+                <a href="http://localhost:3000/index"
+                  style={{
+                    // paddingLeft: "20px"
+                  }}>Go to Back
+                </a><br />
+
+                {ResultBackAndNextDocuments.preFilePath && <a href={ResultBackAndNextDocuments.preFilePath}>Previous</a>} <br />
+                {ResultBackAndNextDocuments.nextFilePath && <a href={ResultBackAndNextDocuments.nextFilePath}>Next</a>}
+
                 <h2>目次</h2>
                 <ul>
                   {tableOfContent.map((anchor) => (
@@ -137,35 +186,18 @@ export default async function BlogPage({ params }: Prop): Promise<ReactElement> 
 
           <div className="w-auto md:w-[calc(100%_-_16rem)] p-8 mr-8 shadow-md rounded-md bg-white">
 
-            <details open>
-              <summary>meta</summary>
-              <small className="text-gray-500">タイトル : {blogData.title}</small> <br />
-              <small className="text-gray-500">投稿日 : {blogData.date}</small> <br />
-              <small className="text-gray-500">投稿者 : {blogData.author}</small> <br />
-              <small className="text-gray-500">履歴 : </small> <br />
+            <MetaSection
+              title={blogData.title}
+              author={blogData.author}
+              date={blogData.date}
+              history={blogData.history}
+            />
 
-              <table>
-                <tbody>
-                  <tr className="text-gray-500">
-                    <th>No</th><th>日付</th><th>変更内容</th>
-                  </tr>
-                  {blogData.history.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>{item.date}</td>
-                      <td>{item.change}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </details>
-
-            <div style={{ minHeight: "1000px" }}
+            <div style={{ minHeight: "100vh" }}
               dangerouslySetInnerHTML={{ __html: blogData.blogContentHtml }}
             />
 
           </div>
-
         </div>
       </div>
     </>

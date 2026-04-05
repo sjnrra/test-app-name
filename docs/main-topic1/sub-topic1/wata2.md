@@ -1,9 +1,10 @@
 ---
-title: ドキュメントのタイトル
-author: 山田太郎
-date: 2024-01-15
+title:
+author: Yamada Taro
+date: 2024-0115
+test: aaaa
 ---
-# これはテスト記事です2
+# これはテスト記事です_メタデータ不正
 
 Markdown を HTML に変換した想定のテストデータです。
 

@@ -6,9 +6,9 @@ import path from "path";
 export const runtime = "nodejs";
 
 /* ****************************************************
- *  function BlogListPage
+ *  function indexPage
  * ****************************************************/
-export default async function BlogListPage() {
+export default async function indexPage() {
 
   // get Directory list
   const docsAllDirPath = path.join(process.cwd(), "docs");
@@ -57,7 +57,7 @@ export default async function BlogListPage() {
   // return
   return (
     <div style={{ padding: 20, minHeight: "100vh" }}>
-      <h1>Markdown 一覧</h1>
+      <h1>Markdown Document 一覧</h1>
 
       {DirAndmdFile_Table.map((main) => (
         <div key={main.main} style={{ marginBottom: 20 }}>
