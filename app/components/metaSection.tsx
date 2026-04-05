@@ -20,38 +20,40 @@ export default function MetaSection({
     history = [],
 }: MetaSectionProps) {
     return (
+        <>
+        <br />
         <details>
-            <summary>meta</summary>
+            <summary>document info</summary>
 
             {title && (
                 <>
-                    <small className="text-gray-500">タイトル : {title}</small>
+                    <small className="text-gray-900">タイトル : {title}</small>
                     <br />
                 </>
             )}
 
             {date && (
                 <>
-                    <small className="text-gray-500">投稿日 : {date}</small>
+                    <small className="text-gray-900">投稿日 : {date}</small>
                     <br />
                 </>
             )}
 
             {author && (
                 <>
-                    <small className="text-gray-500">投稿者 : {author}</small>
+                    <small className="text-gray-900">投稿者 : {author}</small>
                     <br />
                 </>
             )}
 
             {history.length > 0 && (
                 <>
-                    <small className="text-gray-500">履歴 :</small>
+                    <small className="text-gray-900">履歴 :</small>
                     <br />
 
                     <table>
                         <tbody>
-                            <tr className="text-gray-500">
+                            <tr className="text-gray-900">
                                 <th>No</th>
                                 <th>日付</th>
                                 <th>変更内容</th>
@@ -69,5 +71,6 @@ export default function MetaSection({
                 </>
             )}
         </details>
+        </>
     );
 }

@@ -161,16 +161,15 @@ export default async function MarkdonwToHtml({ params }: Prop): Promise<ReactEle
             <div className="flex flex-col sticky top-6">
               <div className="p-4 shadow-md rounded-md mb-8 bg-white ">
 
-                <a href="http://localhost:3000/index"
-                  style={{
-                    // paddingLeft: "20px"
-                  }}>Go to Back
-                </a><br />
+                <nav className="navindex"><a href="/index">Go to Index</a></nav> <br />
+                {/* {ResultBackAndNextDocuments.preFilePath && <nav className="navback"> <a href={ResultBackAndNextDocuments.preFilePath}>Back</a> </nav>}
+                {ResultBackAndNextDocuments.nextFilePath && <nav className="navnext"> <a href={ResultBackAndNextDocuments.nextFilePath}>Next</a> </nav>} */}
 
-                {ResultBackAndNextDocuments.preFilePath && <a href={ResultBackAndNextDocuments.preFilePath}>Previous</a>} <br />
-                {ResultBackAndNextDocuments.nextFilePath && <a href={ResultBackAndNextDocuments.nextFilePath}>Next</a>}
+                {/* <br /> */}
 
-                <h2>目次</h2>
+                <h2>Current loacte</h2>
+                <h3>{main} {`>`} {sub} {`>`} {id}.md</h3>
+                <h2>Contents</h2>
                 <ul>
                   {tableOfContent.map((anchor) => (
                     <li
@@ -186,6 +185,11 @@ export default async function MarkdonwToHtml({ params }: Prop): Promise<ReactEle
 
           <div className="w-auto md:w-[calc(100%_-_16rem)] p-8 mr-8 shadow-md rounded-md bg-white">
 
+            {ResultBackAndNextDocuments.preFilePath && <nav className="navback"> <a href={ResultBackAndNextDocuments.preFilePath}>Back</a> </nav>}
+            {ResultBackAndNextDocuments.nextFilePath && <nav className="navnext"> <a href={ResultBackAndNextDocuments.nextFilePath}>Next</a> </nav>}
+
+            <br />
+
             <MetaSection
               title={blogData.title}
               author={blogData.author}
@@ -198,6 +202,8 @@ export default async function MarkdonwToHtml({ params }: Prop): Promise<ReactEle
             />
 
           </div>
+
+
         </div>
       </div>
     </>
